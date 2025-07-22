@@ -6,23 +6,26 @@
     <title>Login - Youth Haven CourtLink™</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             @apply bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen;
         }
         .login-card {
-            @apply bg-white p-8 rounded-lg shadow-xl w-full max-w-md;
+            @apply bg-white p-8 rounded-lg shadow-xl w-full max-w-md border border-gray-200; /* Added border for formality */
         }
         .form-input {
-            @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500;
+            @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500; /* Blue focus ring for formality */
         }
         .form-button {
-            @apply w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors duration-300;
+            @apply w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300; /* Blue buttons */
         }
         .message {
             @apply text-red-600 text-sm font-medium mt-2 mb-4;
+        }
+        .switch-link {
+            @apply text-blue-700 hover:underline font-semibold; /* Blue link for formality */
         }
     </style>
 </head>
@@ -55,7 +58,7 @@
             <div id="adminLoginForm" class="space-y-4 {% if user_type == 'youth' %}hidden{% endif %}">
                 <div>
                     <label for="admin_user_id" class="block text-sm font-medium text-gray-700">Admin/Judge ID:</label>
-                    <input type="text" id="admin_user_id" name="user_id" class="form-input" placeholder="e.g., PO_JaneDoe" required>
+                    <input type="text" id="admin_user_id" name="user_id" class="form-input" placeholder="e.g., peterbutler41@gmail.com" required>
                 </div>
                 <div>
                     <label for="admin_password" class="block text-sm font-medium text-gray-700">Password:</label>
@@ -67,14 +70,12 @@
 
         <p class="text-center mt-6 text-sm">
             {% if user_type == 'youth' %}
-                <a href="#" onclick="switchForm('admin'); return false;" class="text-teal-600 hover:underline">Login as Admin/Judge</a>
+                <a href="#" onclick="switchForm('admin'); return false;" class="switch-link">Login as Admin/Judge</a>
             {% else %}
-                <a href="#" onclick="switchForm('youth'); return false;" class="text-teal-600 hover:underline">Login as Youth</a>
+                <a href="#" onclick="switchForm('youth'); return false;" class="switch-link">Login as Youth</a>
             {% endif %}
         </p>
-        <p class="text-center mt-2 text-sm text-gray-600">
-            New to Youth Haven? <a href="{{ url_for('signup') }}" class="text-teal-600 hover:underline">Sign Up for a Pilot Program</a>
-        </p>
+        <!-- Removed the "Sign Up for a Pilot Program" link -->
     </div>
 
     <script>
