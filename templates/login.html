@@ -10,34 +10,46 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            @apply bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen;
+            /* Added a subtle background pattern for more depth */
+            background-color: #f3f4f6; /* Light gray background */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 46v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0-20v-4H4v4H0v2h4v4h2v-4h4v-2H6zM36 6v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 16v-4H4v4H0v2h4v4h2v-4h4v-2H6zm30 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM16 26v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm30 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM16 36v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm30 0v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm-10 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM16 6v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm20 40v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM16 46v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm10-20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 10v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM26 6v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            @apply text-gray-800 flex items-center justify-center min-h-screen;
         }
         .login-card {
-            @apply bg-white p-8 rounded-lg shadow-xl w-full max-w-md border border-gray-200; /* Added border for formality */
+            @apply bg-white p-10 rounded-lg shadow-2xl w-full max-w-md border border-gray-200; /* Increased padding, stronger shadow */
         }
         .form-input {
-            @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500; /* Blue focus ring for formality */
+            @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600 transition-all duration-200; /* Darker blue focus */
         }
         .form-button {
-            @apply w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300; /* Blue buttons */
+            @apply w-full py-3 px-4 border border-transparent rounded-md shadow-md text-lg font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 transition-all duration-300 transform hover:-translate-y-0.5; /* Larger, more interactive button */
         }
         .message {
             @apply text-red-600 text-sm font-medium mt-2 mb-4;
         }
         .switch-link {
-            @apply text-blue-700 hover:underline font-semibold; /* Blue link for formality */
+            @apply text-blue-700 hover:underline font-semibold transition-colors duration-200; /* Blue link for formality */
+        }
+        .logo-text {
+            @apply text-teal-800 text-4xl font-extrabold mb-2; /* Larger, bolder logo text */
+        }
+        .tagline {
+            @apply text-gray-600 text-sm mb-8; /* Tagline for context */
         }
     </style>
 </head>
 <body>
     <div class="login-card">
-        <h2 class="text-3xl font-bold text-center text-teal-800 mb-6">Youth Haven CourtLink™ Login</h2>
+        <div class="text-center mb-8">
+            <h1 class="logo-text">Youth Haven CourtLink™</h1>
+            <p class="tagline">Secure Access for Juvenile Justice Professionals</p>
+        </div>
 
         {% if message %}
             <p class="message text-center">{{ message }}</p>
         {% endif %}
 
-        <form method="POST" action="{{ url_for('login') }}" class="space-y-4">
+        <form method="POST" action="{{ url_for('login') }}" class="space-y-6">
             <!-- Hidden input to distinguish form submission type -->
             <input type="hidden" name="user_type_field" id="userTypeField" value="{{ user_type }}">
 
@@ -68,14 +80,13 @@
             </div>
         </form>
 
-        <p class="text-center mt-6 text-sm">
+        <p class="text-center mt-8 text-sm">
             {% if user_type == 'youth' %}
                 <a href="#" onclick="switchForm('admin'); return false;" class="switch-link">Login as Admin/Judge</a>
             {% else %}
                 <a href="#" onclick="switchForm('youth'); return false;" class="switch-link">Login as Youth</a>
             {% endif %}
         </p>
-        <!-- Removed the "Sign Up for a Pilot Program" link -->
     </div>
 
     <script>
@@ -83,27 +94,41 @@
             const youthForm = document.getElementById('youthLoginForm');
             const adminForm = document.getElementById('adminLoginForm');
             const userTypeField = document.getElementById('userTypeField');
-            const switchLink = document.querySelector('.text-center.mt-6 a');
+            const youthUserIdInput = document.getElementById('youth_user_id');
+            const youthDeviceIdInput = document.getElementById('youth_device_id');
+            const adminUserIdInput = document.getElementById('admin_user_id');
+            const adminPasswordInput = document.getElementById('admin_password');
+            const switchLinkParent = document.querySelector('.text-center.mt-8'); // Select the parent p tag
+            
+            // Clear all fields before switching
+            youthUserIdInput.value = '';
+            youthDeviceIdInput.value = '';
+            adminUserIdInput.value = '';
+            adminPasswordInput.value = '';
 
             if (type === 'youth') {
                 youthForm.classList.remove('hidden');
                 adminForm.classList.add('hidden');
                 userTypeField.value = 'youth';
-                switchLink.innerText = 'Login as Admin/Judge';
-                switchLink.setAttribute('onclick', "switchForm('admin'); return false;");
+                switchLinkParent.innerHTML = '<a href="#" onclick="switchForm(\'admin\'); return false;" class="switch-link">Login as Admin/Judge</a>';
             } else {
                 youthForm.classList.add('hidden');
                 adminForm.classList.remove('hidden');
                 userTypeField.value = 'admin';
-                switchLink.innerText = 'Login as Youth';
-                switchLink.setAttribute('onclick', "switchForm('youth'); return false;");
+                switchLinkParent.innerHTML = '<a href="#" onclick="switchForm(\'youth\'); return false;" class="switch-link">Login as Youth</a>';
             }
-            // Clear fields when switching
-            document.getElementById('youth_user_id').value = '';
-            document.getElementById('youth_device_id').value = '';
-            document.getElementById('admin_user_id').value = '';
-            document.getElementById('admin_password').value = '';
         }
+
+        // Initialize form visibility based on URL parameter on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialType = urlParams.get('type');
+            if (initialType === 'admin') {
+                switchForm('admin');
+            } else {
+                switchForm('youth'); // Default to youth login
+            }
+        });
     </script>
 </body>
 </html>
