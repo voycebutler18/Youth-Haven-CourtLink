@@ -4,174 +4,824 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Youth Haven CourtLink™</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            @apply bg-gray-100 text-gray-800;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
         }
-        .dashboard-header {
-            @apply py-6 shadow-md;
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
         }
-        .card {
-            @apply bg-white p-6 rounded-lg shadow-md;
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
         }
-        .progress-bar-container {
-            @apply w-full bg-gray-200 rounded-full h-4;
+
+        .gradient-primary {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 50%, #155e75 100%);
         }
+
+        .gradient-success {
+            background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+        }
+
+        .gradient-warning {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 50%, #92400e 100%);
+        }
+
+        .gradient-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+        }
+
+        .floating-header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-ring {
+            transition: stroke-dasharray 0.8s ease;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .status-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 50;
+        }
+
+        .animated-bg {
+            background: linear-gradient(45deg, #0f172a, #1e293b, #334155, #475569);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+
+        /* Enhanced button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(8, 145, 178, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(8, 145, 178, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 24px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+        }
+
+        .progress-container {
+            position: relative;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 4px;
+            overflow: hidden;
+        }
+
         .progress-bar {
-            @apply bg-teal-600 h-4 rounded-full;
+            height: 12px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #06b6d4, #0891b2, #0e7490);
+            position: relative;
+            overflow: hidden;
         }
-        .button-primary {
-            @apply bg-teal-600 text-white px-6 py-3 rounded-full font-bold hover:bg-teal-700 transition-colors duration-300 shadow-md;
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
         }
-        .list-item {
-            @apply bg-teal-50 p-3 rounded-md border-l-4 border-teal-500 flex justify-between items-center;
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
+
+        /* Table enhancements */
+        .modern-table {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
         .table-header {
-            @apply bg-teal-600 text-white;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            font-weight: 600;
         }
-        .table-row-even {
-            @apply bg-gray-50;
+
+        .table-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .button-view {
-            @apply bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors duration-300;
+
+        .table-row:hover {
+            background: linear-gradient(90deg, rgba(8, 145, 178, 0.05), rgba(14, 116, 144, 0.05));
+            transform: translateX(4px);
         }
-        .status-active { @apply text-green-600 font-semibold; }
-        .status-non-compliant { @apply text-red-600 font-semibold; }
-        .status-pending { @apply text-orange-600 font-semibold; }
+
+        /* Status badges */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .floating-action {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .btn-primary {
+                padding: 14px 24px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
-<body>
-    <header class="dashboard-header {% if session.user_role == 'youth' %}bg-teal-700{% else %}bg-teal-800{% endif %}">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-white">Youth Haven Dashboard</h1>
-            <a href="{{ url_for('logout') }}" class="text-teal-200 hover:text-white transition-colors duration-300">Logout</a>
+<body class="animated-bg">
+    <!-- Floating Header -->
+    <header class="floating-header sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">⚖️</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Youth Haven CourtLink™</h1>
+                        <p class="text-cyan-200 text-sm">Digital Rehabilitation Platform</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('login') }}" class="btn-primary">
+                    <span>🔑</span>
+                    <span>Go to Login</span>
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Floating Action Button (for mobile) -->
+    {% if session.user_role == 'youth' %}
+    <div class="floating-action">
+        <a href="{{ url_for('youth_session', module_name=next_module.name) }}" 
+           class="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl hover:scale-110 transition-transform duration-300">
+            ▶️
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Background Animation Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-cyan-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" style="animation-delay: 2s;"></div>
+        <div class="absolute top-40 left-1/2 transform -translate-x-1/2 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" style="animation-delay: 4s;"></div>
+    </div>
+
+    <script>
+        // Smooth animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 200);
+                });
+            }, 800);
+
+            // Animate circular progress
+            setTimeout(() => {
+                document.querySelectorAll('.progress-ring').forEach(ring => {
+                    const currentOffset = ring.style.strokeDashoffset;
+                    ring.style.strokeDashoffset = ring.getAttribute('stroke-dasharray');
+                    setTimeout(() => {
+                        ring.style.strokeDashoffset = currentOffset;
+                    }, 100);
+                });
+            }, 1000);
+
+            // Add hover effects to cards
+            document.querySelectorAll('.card-hover').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Smooth scroll for any anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add loading states to buttons
+            document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+                if (button.tagName === 'A') return; // Skip anchor tags
+                
+                button.addEventListener('click', function() {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span class="animate-spin mr-2">⭮</span>Loading...';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 2000);
+                });
+            });
+
+            // Notification system (mock)
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ${
+                    type === 'success' ? 'bg-green-500 text-white' : 
+                    type === 'error' ? 'bg-red-500 text-white' : 
+                    'bg-blue-500 text-white'
+                }`;
+                notification.innerHTML = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // Mock data updates (in a real app, this would come from WebSocket or polling)
+            {% if session.user_role == 'admin' or session.user_role == 'judge' %}
+            setInterval(() => {
+                // Randomly update some visual indicators to show "live" data
+                document.querySelectorAll('.status-indicator').forEach(indicator => {
+                    indicator.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                });
+            }, 5000);
+            {% endif %}
+
+            // Enhanced table row interactions
+            document.querySelectorAll('.table-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+                        const link = this.querySelector('a[href*="youth_details"]');
+                        if (link) {
+                            link.click();
+                        }
+                    }
+                });
+                
+                row.style.cursor = 'pointer';
+            });
+
+            // Add ripple effect to buttons
+            document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            .btn-primary, .btn-secondary {
+                position: relative;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>_for('logout') }}" class="btn-secondary">
+                    <span>Logout</span>
+                    <span>→</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-6 py-8">
         {% if session.user_role == 'youth' %}
-            {# Youth Dashboard Content #}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="card md:col-span-2">
-                    <h2 class="text-2xl font-semibold text-teal-800 mb-4">Welcome, {{ youth.name }}!</h2>
-                    <p class="text-gray-600 mb-2">Your Court ID: <span class="font-medium text-teal-700">{{ youth.court_id }}</span></p>
-                    <p class="text-gray-600 mb-4">Probation Officer: <span class="font-medium text-teal-700">{{ youth.probation_officer }}</span></p>
-
-                    <div class="mb-4">
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Overall Progress</h3>
-                        {% set progress_percentage = (youth.sessions_completed / youth.required_sessions) * 100 if youth.required_sessions > 0 else 0 %}
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: {{ "%.0f" % progress_percentage }}%;"></div>
+            <!-- Youth Dashboard Content -->
+            <div class="fade-in-up stagger-1">
+                <!-- Welcome Section -->
+                <div class="glass-card p-8 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-4xl font-bold text-gradient mb-2">Welcome back, {{ youth.name }}!</h2>
+                            <p class="text-gray-600 text-lg">Ready to continue your rehabilitation journey?</p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">{{ youth.sessions_completed }} out of {{ youth.required_sessions }} sessions completed ({{ "%.0f" % progress_percentage }}%)</p>
-                    </div>
-
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">Your Daily Goal</h3>
-                        <div class="bg-teal-50 p-4 rounded-md border-l-4 border-teal-600">
-                            <p class="text-lg font-medium text-teal-800 mb-2">Module: {{ next_module.name }}</p>
-                            <p class="text-gray-700">{{ next_module.description }}</p>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500">Court ID</div>
+                            <div class="text-lg font-bold text-cyan-600">{{ youth.court_id }}</div>
+                            <div class="text-sm text-gray-500 mt-2">Probation Officer</div>
+                            <div class="font-semibold text-gray-800">{{ youth.probation_officer }}</div>
                         </div>
                     </div>
-                    <a href="{{ url_for('youth_session', module_name=next_module.name) }}" class="button-primary block text-center">Start Session Now</a>
                 </div>
 
-                <div class="card">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Recent Activity</h3>
-                    {% if recent_sessions %}
-                        <ul class="space-y-3">
-                            {% for session in recent_sessions %}
-                                <li class="list-item">
-                                    <div>
-                                        <p class="text-gray-700 font-medium">{{ session.module }}</p>
-                                        <p class="text-gray-500 text-sm">{{ session.date }}</p>
+                <!-- Progress and Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- Progress Card -->
+                    <div class="lg:col-span-2 glass-card p-8 card-hover fade-in-up stagger-2">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Your Progress Journey</h3>
+                        
+                        {% set progress_percentage = (youth.sessions_completed / youth.required_sessions) * 100 if youth.required_sessions > 0 else 0 %}
+                        
+                        <!-- Circular Progress -->
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center space-x-6">
+                                <div class="relative">
+                                    <svg class="w-24 h-24 transform -rotate-90">
+                                        <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="8" fill="transparent"/>
+                                        <circle cx="48" cy="48" r="40" stroke="url(#progressGradient)" stroke-width="8" 
+                                                fill="transparent" stroke-dasharray="{{ 2 * 3.14159 * 40 }}" 
+                                                stroke-dashoffset="{{ 2 * 3.14159 * 40 * (1 - progress_percentage/100) }}"
+                                                class="progress-ring"/>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span class="text-2xl font-bold text-cyan-600">{{ "%.0f" % progress_percentage }}%</span>
                                     </div>
-                                    <span class="text-sm font-semibold {% if session.status == 'completed' %}text-green-600{% else %}text-orange-600{% endif %}">
-                                        {{ session.status.capitalize() }}
-                                    </span>
-                                </li>
+                                    <defs>
+                                        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#06b6d4"/>
+                                            <stop offset="100%" style="stop-color:#0891b2"/>
+                                        </linearGradient>
+                                    </defs>
+                                </div>
+                                <div>
+                                    <div class="text-3xl font-bold text-gray-800">{{ youth.sessions_completed }}</div>
+                                    <div class="text-gray-500">of {{ youth.required_sessions }} sessions</div>
+                                    <div class="text-sm text-green-600 font-semibold mt-1">
+                                        {{ youth.required_sessions - youth.sessions_completed }} remaining
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="flex-1 ml-8">
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: {{ "%.0f" % progress_percentage }}%;"></div>
+                                </div>
+                                <div class="text-center mt-2 text-sm text-gray-600">Overall Completion</div>
+                            </div>
+                        </div>
+
+                        <!-- Next Session Card -->
+                        <div class="bg-gradient-to-r from-cyan-50 to-blue-50 p-6 rounded-2xl border-2 border-cyan-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-xl font-bold text-cyan-800 mb-2">🎯 Today's Module</h4>
+                                    <p class="text-lg font-semibold text-cyan-700">{{ next_module.name }}</p>
+                                    <p class="text-gray-600 mt-1">{{ next_module.description }}</p>
+                                </div>
+                                <div>
+                                    <a href="{{ url_for('youth_session', module_name=next_module.name) }}" class="btn-primary">
+                                        <span>▶️</span>
+                                        <span>Start Session</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Sidebar -->
+                    <div class="glass-card p-6 slide-in-right stagger-3">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="mr-2">📈</span>
+                            Recent Activity
+                        </h3>
+                        {% if recent_sessions %}
+                            <div class="space-y-4">
+                                {% for session in recent_sessions %}
+                                    <div class="bg-gradient-to-r from-gray-50 to-cyan-50 p-4 rounded-xl border-l-4 border-cyan-400 hover:shadow-md transition-all">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-semibold text-gray-800">{{ session.module }}</p>
+                                                <p class="text-sm text-gray-500">{{ session.date }}</p>
+                                            </div>
+                                            <span class="status-badge status-{{ session.status }}">
+                                                {% if session.status == 'completed' %}
+                                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                                {% else %}
+                                                    <span class="w-2 h-2 bg-orange-500 rounded-full status-indicator"></span>
+                                                {% endif %}
+                                                {{ session.status.title() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <div class="text-4xl mb-4">🚀</div>
+                                <p class="text-gray-500">Ready to start your first session?</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 fade-in-up stagger-4">
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">🏆</div>
+                        <div class="text-2xl font-bold">{{ youth.sessions_completed }}</div>
+                        <div class="text-sm opacity-80">Sessions Complete</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">🎯</div>
+                        <div class="text-2xl font-bold">{{ youth.required_sessions - youth.sessions_completed }}</div>
+                        <div class="text-sm opacity-80">Sessions Remaining</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">📊</div>
+                        <div class="text-2xl font-bold">{{ "%.0f" % progress_percentage }}%</div>
+                        <div class="text-sm opacity-80">Progress Made</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">✨</div>
+                        <div class="text-2xl font-bold">{{ youth.current_module }}</div>
+                        <div class="text-sm opacity-80">Current Module</div>
+                    </div>
+                </div>
+            </div>
+
+        {% elif session.user_role in ['admin', 'judge', 'probation_officer'] %}
+            <!-- Admin Dashboard Content -->
+            <div class="fade-in-up">
+                <!-- Admin Welcome -->
+                <div class="glass-card p-8 mb-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-4xl font-bold text-gradient mb-2">
+                                Welcome, {{ admin.name }}
+                            </h2>
+                            <p class="text-xl text-gray-600">{{ admin.role }} Dashboard</p>
+                            <p class="text-gray-500 mt-1">Monitoring your assigned youth participants</p>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button class="btn-secondary">📊 Generate Report</button>
+                            <button class="btn-secondary">📧 Send Notifications</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overview Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">👥</div>
+                        <div class="text-2xl font-bold">{{ youth_list|length }}</div>
+                        <div class="text-sm opacity-80">Total Youth</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="text-2xl font-bold">{{ youth_list|selectattr('status', 'equalto', 'active')|list|length }}</div>
+                        <div class="text-sm opacity-80">Active Cases</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">⚠️</div>
+                        <div class="text-2xl font-bold">
+                            {% set needs_checkin = 0 %}
+                            {% for youth in youth_list %}
+                                {% if youth.recent_sessions and (now().date() - datetime.date.fromisoformat(youth.recent_sessions[0].date)).days > 2 %}
+                                    {% set needs_checkin = needs_checkin + 1 %}
+                                {% endif %}
                             {% endfor %}
-                        </ul>
+                            {{ needs_checkin }}
+                        </div>
+                        <div class="text-sm opacity-80">Need Check-in</div>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-3xl mb-2">📈</div>
+                        <div class="text-2xl font-bold">
+                            {% if youth_list %}
+                                {{ "%.0f" % ((youth_list|sum(attribute='sessions_completed')) / (youth_list|sum(attribute='required_sessions')) * 100) if youth_list|sum(attribute='required_sessions') > 0 else 0 }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        <div class="text-sm opacity-80">Avg Progress</div>
+                    </div>
+                </div>
+
+                <!-- Youth Overview Table -->
+                <div class="glass-card p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800">Assigned Youth Overview</h3>
+                        <div class="flex space-x-2">
+                            <button class="btn-secondary text-sm">Filter</button>
+                            <button class="btn-secondary text-sm">Export</button>
+                        </div>
+                    </div>
+
+                    {% if youth_list %}
+                        <div class="modern-table">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="table-header">
+                                        <th class="py-4 px-6 text-left font-semibold">Youth Profile</th>
+                                        <th class="py-4 px-6 text-left font-semibold">Current Module</th>
+                                        <th class="py-4 px-6 text-left font-semibold">Progress</th>
+                                        <th class="py-4 px-6 text-left font-semibold">Last Activity</th>
+                                        <th class="py-4 px-6 text-left font-semibold">Status</th>
+                                        <th class="py-4 px-6 text-left font-semibold">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for youth in youth_list %}
+                                        <tr class="table-row">
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                                        {{ youth.name[0] }}
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-semibold text-gray-900">{{ youth.name }}</div>
+                                                        <div class="text-sm text-gray-500">ID: {{ youth.id }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="font-medium text-gray-900">{{ youth.current_module }}</div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="flex-1">
+                                                        <div class="text-sm font-medium text-gray-900">
+                                                            {{ youth.sessions_completed }} / {{ youth.required_sessions }}
+                                                        </div>
+                                                        <div class="progress-container mt-1">
+                                                            <div class="progress-bar" style="width: {{ (youth.sessions_completed / youth.required_sessions * 100) if youth.required_sessions > 0 else 0 }}%;"></div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-xs font-medium text-gray-500">
+                                                        {{ "%.0f" % ((youth.sessions_completed / youth.required_sessions * 100) if youth.required_sessions > 0 else 0) }}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                {% if youth.recent_sessions %}
+                                                    <div class="text-sm text-gray-900">{{ youth.recent_sessions[0].date }}</div>
+                                                    {% set last_session_date = youth.recent_sessions[0].date %}
+                                                    {% if (now().date() - datetime.date.fromisoformat(last_session_date)).days > 2 %}
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mt-1">
+                                                            <span class="w-1 h-1 bg-red-400 rounded-full mr-1"></span>
+                                                            Needs Check-in
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-1">
+                                                            <span class="w-1 h-1 bg-green-400 rounded-full mr-1"></span>
+                                                            Active
+                                                        </span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-sm text-gray-500">No sessions</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <span class="status-badge status-{{ youth.status }}">
+                                                    {% if youth.status == 'active' %}
+                                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                                    {% elif youth.status == 'non-compliant' %}
+                                                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                                    {% else %}
+                                                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                                                    {% endif %}
+                                                    {{ youth.status.replace('_', ' ').title() }}
+                                                </span>
+                                            </td>
+                                            <td class="py-4 px-6">
+                                                <a href="{{ url_for('youth_details', youth_id=youth.id) }}" 
+                                                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
+                                                    <span class="mr-2">👁️</span>
+                                                    View Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     {% else %}
-                        <p class="text-gray-500">No recent sessions to display.</p>
+                        <div class="text-center py-16">
+                            <div class="text-6xl mb-4">👥</div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">No Youth Assigned</h3>
+                            <p class="text-gray-500">Youth participants will appear here once they are assigned to your caseload.</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
 
-        {% elif session.user_role == 'admin' or session.user_role == 'judge' %}
-            {# Admin/Judge Dashboard Content #}
-            <div class="card mb-8">
-                <h2 class="text-2xl font-semibold text-teal-800 mb-4">Welcome, {{ admin.name }} ({{ admin.role }})</h2>
-                <p class="text-gray-600">Here's an overview of your assigned youth.</p>
-            </div>
-
-            <div class="card">
-                <h3 class="text-2xl font-semibold text-teal-800 mb-4">Assigned Youth Overview</h3>
-                {% if youth_list %}
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                            <thead>
-                                <tr>
-                                    <th class="py-3 px-4 text-left font-semibold table-header rounded-tl-lg">Youth ID</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header">Name</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header">Current Module</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header">Sessions Progress</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header">Last Session Date</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header">Status</th>
-                                    <th class="py-3 px-4 text-left font-semibold table-header rounded-tr-lg">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for youth in youth_list %}
-                                    <tr class="border-b border-gray-200 {% if loop.index is even %}table-row-even{% endif %}">
-                                        <td class="py-3 px-4">{{ youth.id }}</td>
-                                        <td class="py-3 px-4">{{ youth.name }}</td>
-                                        <td class="py-3 px-4">{{ youth.current_module }}</td>
-                                        <td class="py-3 px-4">{{ youth.sessions_completed }} / {{ youth.required_sessions }}</td>
-                                        <td class="py-3 px-4">
-                                            {% if youth.recent_sessions %}
-                                                {{ youth.recent_sessions[0].date }}
-                                                {% set last_session_date = youth.recent_sessions[0].date %}
-                                                {% if (now().date() - datetime.date.fromisoformat(last_session_date)).days > 2 %}
-                                                    <span class="text-red-500 text-xs ml-1">(Needs Check-in)</span>
-                                                {% endif %}
-                                            {% else %}
-                                                N/A
-                                            {% endif %}
-                                        </td>
-                                        <td class="py-3 px-4">
-                                            <span class="
-                                                {% if youth.status == 'active' %}status-active
-                                                {% elif youth.status == 'non-compliant' %}status-non-compliant
-                                                {% else %}status-pending
-                                                {% endif %}
-                                            ">
-                                                {{ youth.status.capitalize() }}
-                                            </span>
-                                        </td>
-                                        <td class="py-3 px-4">
-                                            <a href="{{ url_for('youth_details', youth_id=youth.id) }}" class="button-view">View Details</a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p class="text-gray-500">No youth assigned or found.</p>
-                {% endif %}
-            </div>
         {% else %}
-            <div class="text-center bg-white p-8 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-teal-800 mb-4">Access Denied</h2>
-                <p class="text-gray-600 mb-6">You must be logged in to view the dashboard.</p>
-                <a href="{{ url_for('login') }}" class="button-primary">Go to Login</a>
-            </div>
-        {% endif %}
-    </main>
-</body>
-</html>
+            <!-- Unauthorized Access -->
+            <div class="glass-card p-12 text-center">
+                <div class="text-6xl mb-6">🔒</div>
+                <h2 class="text-3xl font-bold text-gradient mb-4">Access Restricted</h2>
+                <p class="text-xl text-gray-600 mb-8">You need to be logged in to view the dashboard.</p>
+                <a href="{{ url
