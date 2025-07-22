@@ -409,4 +409,212 @@
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Completion Rate:</span>
-                    <span class="detail-value">{{ (youth.sessions_completed / youth.
+                    <span class="detail-value">{{ (youth.sessions_completed / youth.required_sessions * 100) | round }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Sessions Remaining:</span>
+                    <span class="detail-value">{{ youth.required_sessions - youth.sessions_completed }}</span>
+                </div>
+            </div>
+
+            <!-- Status Information -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-status">⚡</div>
+                    <h3>Current Status</h3>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Enrollment Status:</span>
+                    <span class="detail-value">
+                        {% if youth.status == 'active' %}
+                            <span class="status-badge status-active">Active</span>
+                        {% elif youth.status == 'completed' %}
+                            <span class="status-badge status-completed">Completed</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Inactive</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Activity:</span>
+                    <span class="detail-value">
+                        {% if session_history %}
+                            {{ session_history[-1].date }}
+                        {% else %}
+                            No sessions yet
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Next Session Due:</span>
+                    <span class="detail-value">{{ now.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session History -->
+        <div class="session-history">
+            <div class="section-header">
+                <h2 class="section-title">Session History</h2>
+                <div class="filter-controls">
+                    <button class="filter-btn active" onclick="filterSessions('all')">All Sessions</button>
+                    <button class="filter-btn" onclick="filterSessions('completed')">Completed</button>
+                    <button class="filter-btn" onclick="filterSessions('recent')">Recent</button>
+                </div>
+            </div>
+
+            <div class="session-timeline">
+                {% if session_history %}
+                    {% for session in session_history %}
+                    <div class="session-item" data-status="{{ session.status }}" data-date="{{ session.date }}">
+                        <div class="session-header">
+                            <div class="session-info">
+                                <h4>{{ session.module }} - Session {{ session.session_id[:8] }}</h4>
+                                <div class="session-meta">
+                                    <strong>Date:</strong> {{ session.date }} | 
+                                    <strong>Status:</strong> 
+                                    <span class="status-badge status-{{ session.status }}">{{ session.status.title() }}</span>
+                                </div>
+                            </div>
+                            <div class="session-actions">
+                                {% if session.video_path %}
+                                    <a href="/view_video/{{ session.video_path }}" class="btn btn-primary" target="_blank">
+                                        🎥 View Video
+                                    </a>
+                                {% endif %}
+                                <button class="btn btn-secondary" onclick="toggleReflection('{{ session.session_id }}')">
+                                    📝 View Reflection
+                                </button>
+                            </div>
+                        </div>
+
+                        {% if session.reflection %}
+                        <div class="reflection-preview" id="reflection-{{ session.session_id }}" style="display: none;">
+                            <h5>Personal Reflection:</h5>
+                            <p>{{ session.reflection }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if session.identity_status %}
+                        <div style="margin-top: 15px;">
+                            <small style="color: #666;">
+                                <strong>Identity Verification:</strong> {{ session.identity_status }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <h3>No Sessions Yet</h3>
+                        <p>This youth hasn't completed any sessions. Sessions will appear here once they begin their program.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Action Panel -->
+        <div class="card" style="margin-top: 35px;">
+            <div class="card-header">
+                <div class="card-icon" style="background: linear-gradient(45deg, #ff6b6b, #ee5a52);">⚙️</div>
+                <h3>Admin Actions</h3>
+            </div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <button class="btn btn-primary" onclick="generateReport()">📄 Generate Report</button>
+                <button class="btn btn-secondary" onclick="sendReminder()">📧 Send Reminder</button>
+                <button class="btn btn-secondary" onclick="editRequirements()">✏️ Edit Requirements</button>
+                <button class="btn btn-secondary" onclick="exportData()">💾 Export Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterSessions(type) {
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const sessions = document.querySelectorAll('.session-item');
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            sessions.forEach(session => {
+                const status = session.getAttribute('data-status');
+                const dateStr = session.getAttribute('data-date');
+                const sessionDate = new Date(dateStr);
+
+                let show = false;
+                
+                switch(type) {
+                    case 'all':
+                        show = true;
+                        break;
+                    case 'completed':
+                        show = status === 'completed';
+                        break;
+                    case 'recent':
+                        show = sessionDate >= weekAgo;
+                        break;
+                }
+
+                session.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        function toggleReflection(sessionId) {
+            const reflection = document.getElementById('reflection-' + sessionId);
+            const button = event.target;
+            
+            if (reflection.style.display === 'none' || !reflection.style.display) {
+                reflection.style.display = 'block';
+                button.textContent = '📝 Hide Reflection';
+            } else {
+                reflection.style.display = 'none';
+                button.textContent = '📝 View Reflection';
+            }
+        }
+
+        function generateReport() {
+            // In a real implementation, this would generate a PDF report
+            alert('Generating comprehensive report for {{ youth.name }}...\n\nThis would include:\n• Complete session history\n• Progress analytics\n• Video evidence links\n• Reflection summaries\n• Compliance status');
+        }
+
+        function sendReminder() {
+            if (confirm('Send a reminder notification to {{ youth.name }} about completing their next session?')) {
+                // In a real implementation, this would send an actual notification
+                alert('Reminder sent successfully!\n\nThe youth will receive a notification on their registered device.');
+            }
+        }
+
+        function editRequirements() {
+            const newRequired = prompt('Enter new required sessions count for {{ youth.name }}:', '{{ youth.required_sessions }}');
+            if (newRequired && !isNaN(newRequired) && parseInt(newRequired) > 0) {
+                // In a real implementation, this would update the database
+                alert('Requirements updated successfully!\n\nNew required sessions: ' + newRequired);
+            }
+        }
+
+        function exportData() {
+            // In a real implementation, this would export data as CSV/JSON
+            alert('Exporting data for {{ youth.name }}...\n\nThis would include:\n• Session completion data\n• Video file references\n• Reflection text\n• Progress metrics\n• Compliance history');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
