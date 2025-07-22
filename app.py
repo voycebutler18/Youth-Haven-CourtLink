@@ -1,6 +1,6 @@
 # In app.py
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, send_from_directory
-import os
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify # Removed send_file, send_from_directory as they are not needed for templates
+import os # Still needed for os.makedirs and potential other path operations
 import datetime
 import uuid
 
@@ -48,11 +48,11 @@ mock_admin_db = {
 
 mock_session_logs = {
     "YOUTH001": [
-        {"session_id": "sess_1", "module": "Intro", "date": "2025-07-20", "status": "completed", "video_path": "path/to/video_Y001_S1.mp4", "reflection": "Learned about introductions."},
-        {"session_id": "sess_2", "module": "Anger Management", "date": "2025-07-21", "status": "completed", "video_path": "path/to/video_Y001_S2.mp4", "reflection": "Reflected on anger triggers."}
+        {"session_id": "sess_1", "module": "Intro", "date": "2025-07-20", "status": "completed", "video_path": "mock_video_uploads/video_Y001_S1.mp4", "reflection": "Learned about introductions."},
+        {"session_id": "sess_2", "module": "Anger Management", "date": "2025-07-21", "status": "completed", "video_path": "mock_video_uploads/video_Y001_S2.mp4", "reflection": "Reflected on anger triggers."}
     ],
     "YOUTH002": [
-        {"session_id": "sess_3", "module": "Job Prep", "date": "2025-07-19", "status": "completed", "video_path": "path/to/video_Y002_S3.mp4", "reflection": "Updated resume tips."}
+        {"session_id": "sess_3", "module": "Job Prep", "date": "2025-07-19", "status": "completed", "video_path": "mock_video_uploads/video_Y002_S3.mp4", "reflection": "Updated resume tips."}
     ]
 }
 
@@ -81,8 +81,10 @@ def store_video_and_upload_to_court_mock(youth_id, session_id, video_data):
     os.makedirs(upload_folder, exist_ok=True)
     mock_file_path = os.path.join(upload_folder, video_filename)
 
+    # For mock, video_data is a base64 string. We'll just write a dummy file.
+    # In a real app, you'd decode base64 and write actual binary video data.
     with open(mock_file_path, "wb") as f:
-        f.write(b"Mock video content for " + video_data.encode('utf-8'))
+        f.write(f"Mock video content for {youth_id} session {session_id}".encode('utf-8'))
 
     print(f"Mock: Video for {youth_id}, session {session_id} saved to {mock_file_path} and 'uploaded' to court contacts.")
     return mock_file_path
@@ -99,8 +101,8 @@ def homepage():
         # If logged in, redirect to the combined dashboard (index.html)
         return redirect(url_for('dashboard'))
     
-    # If not logged in, serve the public homepage file
-    return send_from_directory('static', 'home.html')
+    # If not logged in, render the public homepage template
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -173,7 +175,7 @@ def signup():
                 "contact_person": contact_person,
                 "contact_email": contact_email,
                 "phone_number": phone_number,
-                "password_hash": "MOCKED_HASH_" + password,
+                "password_hash": "MOCKED_HASH_" + password, # Simulate hashing
                 "status": "pending",
                 "application_date": datetime.date.today().isoformat()
             }
@@ -183,7 +185,7 @@ def signup():
     return render_template('signup.html', message=message)
 
 # --- Combined Dashboard Route ---
-@app.route('/dashboard') # You can also name this '/' if you want it to be the default post-login page
+@app.route('/dashboard')
 def dashboard():
     """
     Renders the combined dashboard (index.html) based on user role.
@@ -208,7 +210,7 @@ def dashboard():
                                youth=youth_data,
                                next_module=next_module_info,
                                recent_sessions=recent_sessions,
-                               now=datetime.datetime.now) # Pass now for date calculations
+                               now=datetime.datetime.now)
     elif user_role in ['admin', 'judge']:
         admin_data = mock_admin_db.get(user_id)
         if not admin_data:
@@ -221,7 +223,7 @@ def dashboard():
         return render_template('index.html',
                                admin=admin_data,
                                youth_list=youth_list,
-                               now=datetime.datetime.now) # Pass now for date calculations
+                               now=datetime.datetime.now)
     else:
         return "Unauthorized role.", 403
 
@@ -322,6 +324,8 @@ def view_video(video_path):
     base_dir = os.path.abspath(os.path.dirname(__file__))
     full_path = os.path.join(base_dir, video_path)
 
+    # Make sure the video path is within the designated mock_video_uploads folder
+    # and that the file actually exists.
     if not os.path.exists(full_path) or not full_path.startswith(os.path.join(base_dir, 'mock_video_uploads')):
         return "Video not found or unauthorized.", 404
 
