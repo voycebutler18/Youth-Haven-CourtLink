@@ -1,5 +1,5 @@
 # In app.py
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, send_from_directory # Import send_from_directory
 import os
 import datetime
 import uuid
@@ -8,7 +8,6 @@ app = Flask(__name__)
 app.secret_key = 'your_super_secret_key_here' # **CRITICAL: Change this to a strong, random key in production**
 
 # --- Mock Database / Data Storage ---
-# For signup, we'll add a mock_pilot_applications_db
 mock_youth_db = {
     "YOUTH001": {
         "device_id": "DEVICEABC",
@@ -57,7 +56,6 @@ mock_session_logs = {
     ]
 }
 
-# New mock database for pilot sign-up applications
 mock_pilot_applications_db = {} # Stores submitted pilot applications
 
 # --- Utility Functions (Mocked) ---
@@ -103,7 +101,8 @@ def homepage():
         elif session['user_role'] == 'admin' or session['user_role'] == 'judge':
             return redirect(url_for('admin_dashboard'))
     
-    return send_file('home.html') # Serve the static home.html from the root
+    # Serve the static home.html from the 'static' folder
+    return send_from_directory('static', 'home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -170,20 +169,17 @@ def signup():
         elif contact_email in [app['contact_email'] for app in mock_pilot_applications_db.values()]:
             message = "An application with this email already exists."
         else:
-            # In a real app: Hash password, save to database, send confirmation email.
-            # For mock: Store in dictionary.
             application_id = str(uuid.uuid4())
             mock_pilot_applications_db[application_id] = {
                 "organization_name": org_name,
                 "contact_person": contact_person,
                 "contact_email": contact_email,
                 "phone_number": phone_number,
-                "password_hash": "MOCKED_HASH_" + password, # Simulate hashing
+                "password_hash": "MOCKED_HASH_" + password,
                 "status": "pending",
                 "application_date": datetime.date.today().isoformat()
             }
             message = "Pilot application submitted successfully! We will review your application and contact you soon."
-            # Optionally redirect to a success page or login page
             return render_template('signup.html', message=message, success=True)
             
     return render_template('signup.html', message=message)
@@ -208,12 +204,11 @@ def youth_dashboard():
     
     recent_sessions = mock_session_logs.get(youth_id, [])[-3:]
 
-    # Pass datetime module to template for now() function if needed
     return render_template('youth_dashboard.html',
                            youth=youth_data,
                            next_module=next_module_info,
                            recent_sessions=recent_sessions,
-                           now=datetime.datetime.now) # Pass datetime.datetime.now for template usage
+                           now=datetime.datetime.now)
 
 
 @app.route('/youth_session/<module_name>')
@@ -298,7 +293,7 @@ def admin_dashboard():
     return render_template('admin_dashboard.html',
                            admin=admin_data,
                            youth_list=youth_list,
-                           now=datetime.datetime.now) # Pass datetime.datetime.now for template usage
+                           now=datetime.datetime.now)
 
 @app.route('/admin/youth_details/<youth_id>')
 def youth_details(youth_id):
