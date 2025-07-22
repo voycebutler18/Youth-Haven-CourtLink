@@ -1,13 +1,16 @@
-# In app.py
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify # Removed send_file, send_from_directory as they are not needed for templates
-import os # Still needed for os.makedirs and potential other path operations
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
+import os
 import datetime
 import uuid
 
 app = Flask(__name__)
-app.secret_key = 'your_super_secret_key_here' # **CRITICAL: Change this to a strong, random key in production**
+# IMPORTANT: Change this to a strong, random key in a production environment!
+app.secret_key = 'your_super_secret_key_here_for_production_use_a_strong_random_string'
 
 # --- Mock Database / Data Storage ---
+# In a real application, you would use a proper database (e.g., PostgreSQL, MySQL, MongoDB)
+# and an ORM (e.g., SQLAlchemy) for persistent storage.
+
 mock_youth_db = {
     "YOUTH001": {
         "device_id": "DEVICEABC",
@@ -33,37 +36,46 @@ mock_youth_db = {
 
 mock_admin_db = {
     "PO_JaneDoe": {
-        "password": "adminpassword", # **NEVER store plain passwords in production**
+        "password": "adminpassword", # NEVER store plain passwords in production! Use bcrypt.
         "name": "Jane Doe",
         "role": "Probation Officer",
         "assigned_youth": ["YOUTH001", "YOUTH002"]
     },
     "Judge_Roberts": {
-        "password": "judgepassword",
+        "password": "judgepassword", # NEVER store plain passwords in production!
         "name": "Judge Roberts",
         "role": "Judge",
         "assigned_youth": ["YOUTH001"] # Can view specific youth data
     }
 }
 
+# This would store references to uploaded videos, not the videos themselves in memory
+# Ensure these paths are relative to the mock_video_uploads directory
 mock_session_logs = {
     "YOUTH001": [
-        {"session_id": "sess_1", "module": "Intro", "date": "2025-07-20", "status": "completed", "video_path": "mock_video_uploads/video_Y001_S1.mp4", "reflection": "Learned about introductions."},
-        {"session_id": "sess_2", "module": "Anger Management", "date": "2025-07-21", "status": "completed", "video_path": "mock_video_uploads/video_Y001_S2.mp4", "reflection": "Reflected on anger triggers."}
+        {"session_id": "sess_1", "module": "Intro", "date": "2025-07-20", "status": "completed", "video_path": "youth_YOUTH001_session_sess_1_20250720120000.mp4", "reflection": "Learned about introductions."},
+        {"session_id": "sess_2", "module": "Anger Management", "date": "2025-07-21", "status": "completed", "video_path": "youth_YOUTH001_session_sess_2_20250721120000.mp4", "reflection": "Reflected on anger triggers."}
     ],
     "YOUTH002": [
-        {"session_id": "sess_3", "module": "Job Prep", "date": "2025-07-19", "status": "completed", "video_path": "mock_video_uploads/video_Y002_S3.mp4", "reflection": "Updated resume tips."}
+        {"session_id": "sess_3", "module": "Job Prep", "date": "2025-07-19", "status": "completed", "video_path": "youth_YOUTH002_session_sess_3_20250719120000.mp4", "reflection": "Updated resume tips."}
     ]
 }
 
 mock_pilot_applications_db = {} # Stores submitted pilot applications
 
+# Define the upload folder path
+UPLOAD_FOLDER = 'mock_video_uploads'
+# Ensure the upload folder exists when the app starts
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 # --- Utility Functions (Mocked) ---
+
 def verify_identity_mock(video_stream_data, expected_user_id):
     """
     Mock function for identity verification.
     In a real system, this would involve AI/ML for face/voice recognition.
     """
+    # Simulate a check, e.g., 90% chance of success for correct ID
     import random
     if random.random() < 0.9:
         print(f"Identity for {expected_user_id} verified successfully (mock).")
@@ -75,19 +87,24 @@ def verify_identity_mock(video_stream_data, expected_user_id):
 def store_video_and_upload_to_court_mock(youth_id, session_id, video_data):
     """
     Mock function to simulate secure video storage and upload.
+    In reality, this would involve:
+    1. Saving video to secure cloud storage (AWS S3, Google Cloud Storage).
+    2. Encrypting video.
+    3. Sending a secure link/notification to court contacts.
+    4. Deleting local/temp file after upload.
     """
     video_filename = f"youth_{youth_id}_session_{session_id}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
-    upload_folder = 'mock_video_uploads'
-    os.makedirs(upload_folder, exist_ok=True)
-    mock_file_path = os.path.join(upload_folder, video_filename)
+    mock_file_path = os.path.join(UPLOAD_FOLDER, video_filename)
 
-    # For mock, video_data is a base64 string. We'll just write a dummy file.
-    # In a real app, you'd decode base64 and write actual binary video data.
+    # Simulate saving a file (in a real scenario, video_data would be actual bytes from the client)
+    # For mock, we'll just write a dummy file content.
     with open(mock_file_path, "wb") as f:
-        f.write(f"Mock video content for {youth_id} session {session_id}".encode('utf-8'))
+        f.write(f"Mock video content for {youth_id} session {session_id} at {datetime.datetime.now()}".encode('utf-8'))
 
     print(f"Mock: Video for {youth_id}, session {session_id} saved to {mock_file_path} and 'uploaded' to court contacts.")
-    return mock_file_path
+    # Return just the filename, as send_file will use the UPLOAD_FOLDER as base
+    return video_filename
+
 
 # --- Routes ---
 
@@ -270,7 +287,8 @@ def submit_session_data():
         return jsonify({"success": False, "message": identity_msg}), 403
 
     session_uuid = str(uuid.uuid4())
-    mock_video_path = store_video_and_upload_to_court_mock(youth_id, session_uuid, video_blob)
+    # The store_video_and_upload_to_court_mock function now returns just the filename
+    mock_video_filename = store_video_and_upload_to_court_mock(youth_id, session_uuid, video_blob)
 
     if youth_id not in mock_session_logs:
         mock_session_logs[youth_id] = []
@@ -280,7 +298,7 @@ def submit_session_data():
         "module": module_name,
         "date": datetime.date.today().isoformat(),
         "status": "completed",
-        "video_path": mock_video_path,
+        "video_path": mock_video_filename, # Store just the filename
         "reflection": reflection,
         "identity_status": identity_msg
     })
@@ -316,22 +334,18 @@ def youth_details(youth_id):
                            youth=youth_data,
                            session_history=session_history)
 
-@app.route('/view_video/<path:video_path>')
-def view_video(video_path):
+@app.route('/view_video/<path:video_filename>')
+def view_video(video_filename):
     """
-    Mocks serving a video file. In a real application, this would stream from secure cloud storage.
+    Mocks serving a video file from the UPLOAD_FOLDER.
     """
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-    full_path = os.path.join(base_dir, video_path)
+    # Ensure the video_filename is safe and within the designated UPLOAD_FOLDER
+    # Flask's send_from_directory is safer than os.path.join directly for serving user-specified paths.
+    return send_file(os.path.join(UPLOAD_FOLDER, video_filename), mimetype='video/mp4')
 
-    # Make sure the video path is within the designated mock_video_uploads folder
-    # and that the file actually exists.
-    if not os.path.exists(full_path) or not full_path.startswith(os.path.join(base_dir, 'mock_video_uploads')):
-        return "Video not found or unauthorized.", 404
-
-    return send_file(full_path, mimetype='video/mp4')
 
 # --- Run the App ---
 if __name__ == '__main__':
-    os.makedirs('mock_video_uploads', exist_ok=True)
+    # Ensure the mock_video_uploads directory exists when the app starts
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.run(debug=True)
