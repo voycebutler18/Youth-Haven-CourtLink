@@ -4,580 +4,359 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Youth Haven CourtLink™ - Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General Body Styles */
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-            line-height: 1.6;
-            background-color: #f4f7f6;
+            font-family: 'Inter', sans-serif;
+            @apply bg-gray-100 text-gray-800; /* Slightly darker background for more formality */
         }
-
-        /* Header */
-        header {
-            background-color: #004d40; /* Dark Teal */
-            color: white;
-            padding: 1.5em 0;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        /* Custom styles for specific elements not easily covered by Tailwind */
+        .gradient-bg {
+            /* Deeper, more authoritative teal gradient */
+            background: linear-gradient(to right, #003333, #005555); 
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            letter-spacing: 1px;
-        }
-
-        header p {
-            margin: 0.5em 0 0;
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        /* Navigation Bar */
-        nav {
-            background-color: #00796B; /* Medium Teal */
-            padding: 0.8em 0;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-        }
-
-        nav ul li {
-            margin: 0 1.5em;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1em;
-            padding: 0.5em 0;
-            transition: color 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            color: #e0f2f1; /* Lighter teal on hover */
-        }
-
-        /* Container for content */
-        .container {
-            max-width: 1000px;
-            margin: 2em auto;
-            padding: 0 1.5em;
-        }
-
-        /* Section Styling */
-        section {
-            background-color: white;
-            padding: 2.5em;
-            margin-bottom: 2em;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative; /* For pseudo-elements */
-        }
-
-        section h2 {
-            color: #004d40; /* Dark Teal */
-            font-size: 2em;
-            margin-top: 0;
-            margin-bottom: 1em;
-            text-align: center;
-            position: relative;
-            padding-bottom: 0.5em;
-        }
-
-        /* Underline effect for H2 */
-        section h2::after {
+        .section-heading::after {
             content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
+            display: block;
             width: 80px;
-            height: 3px;
-            background-color: #00796B; /* Medium Teal */
-            border-radius: 2px;
+            height: 4px;
+            @apply bg-teal-700 rounded-full mx-auto mt-2; /* Deeper teal for underline */
         }
-
-        /* Intro Section */
-        #intro p {
-            font-size: 1.1em;
-            text-align: center;
-            max-width: 800px;
-            margin: 1em auto 2em;
-            color: #555;
+        /* More formal button styles */
+        .nav-button {
+            @apply bg-teal-700 text-white px-5 py-2 rounded-md font-semibold text-base hover:bg-teal-800 transition-colors duration-200 shadow-sm;
         }
-
-        /* Features/Lists */
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 1.5em;
+        .login-button {
+            @apply bg-white text-teal-800 px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition-colors duration-200 shadow-md;
         }
-
-        ul li {
-            background-color: #e0f2f1; /* Light Teal Background */
-            border-left: 5px solid #00796B; /* Medium Teal Border */
-            padding: 1em 1.5em;
-            margin-bottom: 0.8em;
-            border-radius: 5px;
-            display: flex;
-            align-items: flex-start;
-            font-size: 1.05em;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .cta-button {
+            @apply bg-blue-700 text-white px-10 py-4 rounded-lg font-bold text-xl hover:bg-blue-800 transition-colors duration-200 shadow-lg; /* Stronger, more formal CTA */
         }
-
-        ul li strong {
-            color: #004d40;
-            margin-right: 0.5em;
-            flex-shrink: 0; /* Prevents text from wrapping too early */
+        .list-item-formal {
+            @apply bg-gray-50 p-4 rounded-md border-l-4 border-blue-600 flex items-start shadow-sm; /* Blue border for a more official feel */
         }
-
-        .icon-list ul li {
-            background-color: transparent;
-            border-left: none;
-            padding: 0.5em 0;
-            margin-bottom: 0.5em;
-            display: flex;
-            align-items: center;
-        }
-
-        .icon-list ul li::before {
-            content: '✓'; /* Checkmark icon */
-            color: #00796B;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-right: 0.8em;
-            background-color: #e0f2f1;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        /* Table Styling for Safeguards */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5em;
-        }
-
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        table th {
-            background-color: #00796B; /* Medium Teal */
-            color: white;
-            font-weight: bold;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Use Case / Other Sections with Bullet Points */
-        .bullet-points ul {
-            list-style: disc; /* Use standard disc bullets */
-            margin-left: 20px;
-            padding: 0;
-        }
-
-        .bullet-points ul li {
-            background-color: transparent;
-            border-left: none;
-            padding: 0.2em 0;
-            margin-bottom: 0.5em;
-            font-size: 1em;
-            box-shadow: none;
-        }
-
-        /* Call to Action */
-        .call-to-action {
-            text-align: center;
-            padding: 3em 0;
-            background-color: #e0f2f1; /* Light Teal */
-            border-radius: 8px;
-            margin-top: 3em;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .call-to-action h3 {
-            color: #004d40;
-            font-size: 1.8em;
-            margin-bottom: 1em;
-        }
-
-        .call-to-action p {
-            font-size: 1.1em;
-            margin-bottom: 1.5em;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #00796B; /* Medium Teal */
-            color: white;
-            padding: 1em 2.5em;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,121,107,0.3);
-        }
-
-        .btn:hover {
-            background-color: #005f54; /* Slightly darker teal */
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2em 0;
-            margin-top: 3em;
-            color: #777;
-            font-size: 0.9em;
-            border-top: 1px solid #eee;
-            background-color: #f0f0f0;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
-
-            header p {
-                font-size: 1em;
-            }
-
-            nav ul li {
-                margin: 0 0.8em;
-            }
-
-            .container {
-                margin: 1.5em auto;
-                padding: 0 1em;
-            }
-
-            section {
-                padding: 2em 1.5em;
-            }
-
-            section h2 {
-                font-size: 1.8em;
-            }
-
-            table th, table td {
-                padding: 10px;
-                font-size: 0.9em;
-            }
-
-            ul li {
-                font-size: 1em;
-                padding: 0.8em 1em;
-            }
-
-            .btn {
-                padding: 0.8em 2em;
-                font-size: 1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            nav ul li {
-                margin: 0.5em 0;
-            }
-
-            section {
-                padding: 1.5em 1em;
-            }
-
-            section h2 {
-                font-size: 1.6em;
-            }
-
-            ul li {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            ul li strong {
-                margin-bottom: 0.3em;
-            }
-
-            .icon-list ul li::before {
-                margin-right: 0.5em;
-            }
+        .table-header-formal {
+            @apply bg-gray-200 text-gray-700; /* Lighter, more subdued table header */
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Youth Haven CourtLink™</h1>
-        <p>A Secure, Court-Mandated Digital Rehabilitation Platform for Juvenile Justice Systems</p>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">Youth Haven CourtLink™</h1>
+            <p class="text-lg md:text-xl opacity-90">A Secure, Court-Mandated Digital Rehabilitation Platform for Juvenile Justice Systems</p>
+        </div>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#intro">Overview</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#safeguards">Safeguards</a></li>
-            <li><a href="#court-dashboard">Dashboard</a></li>
-            <li><a href="#who-its-for">Who It's For</a></li>
-            <li><a href="#contact">Pilot Programs</a></li>
-            <li><a href="/login?type=youth">Login</a></li> <!-- Link to your login page -->
-        </ul>
+    <!-- Navigation Bar - More Formal Buttons -->
+    <nav class="bg-teal-800 shadow-md py-3">
+        <div class="container mx-auto px-4">
+            <ul class="flex flex-wrap justify-center space-x-2 md:space-x-4">
+                <li><a href="#overview" class="nav-button">Overview</a></li>
+                <li><a href="#how-it-works" class="nav-button">How It Works</a></li>
+                <li><a href="#safeguards" class="nav-button">Safeguards</a></li>
+                <li><a href="#dashboard" class="nav-button">Dashboard</a></li>
+                <li><a href="#who-its-for" class="nav-button">Who It's For</a></li>
+                <li><a href="#request-demo" class="nav-button">Request Demo</a></li>
+                <li><a href="/login?type=youth" class="login-button">Login</a></li>
+            </ul>
+        </div>
     </nav>
 
-    <div class="container">
-        <section id="intro">
-            <h2>What Is Youth Haven CourtLink™?</h2>
-            <p><strong>Youth Haven CourtLink™</strong> is a secure, court-mandated digital rehabilitation platform designed specifically for juvenile courts, probation departments, and diversion programs. It gives courts the ability to assign structured, trackable behavioral rehabilitation to youth—remotely, securely, and with proof of compliance.</p>
-            <p>Built for real change, Youth Haven CourtLink helps young people reflect, grow, and meet their court requirements—while giving judges and probation officers real-time accountability without increasing their caseload.</p>
+    <main class="container mx-auto px-4 py-8">
+
+        <!-- What Is Youth Haven CourtLink™? -->
+        <section id="overview" class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">What Is Youth Haven CourtLink™?</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                <strong class="text-teal-900">Youth Haven CourtLink™</strong> is a secure, court-mandated digital rehabilitation platform designed specifically for juvenile courts, probation departments, and diversion programs. It gives courts the ability to assign structured, trackable behavioral rehabilitation to youth—remotely, securely, and with proof of compliance.
+            </p>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700">
+                Built for real change, Youth Haven CourtLink helps young people reflect, grow, and meet their court requirements—while giving judges and probation officers real-time accountability without increasing their caseload.
+            </p>
         </section>
 
-        <section id="why-it-exists">
-            <h2>Why It Exists</h2>
-            <p>Juvenile courts are overwhelmed with youth who need help, not just punishment. But most programs rely on outdated worksheets, overworked counselors, or in-person check-ins that don’t scale.</p>
-            <p>Youth Haven solves that by creating a fully digital rehabilitation experience that is:</p>
-            <div class="icon-list">
-                <ul>
-                    <li>Tamper-proof</li>
-                    <li>Therapeutic</li>
-                    <li>Court-trackable</li>
-                    <li>Legally compliant</li>
-                    <li>Easy to use on any phone or tablet</li>
-                </ul>
+        <!-- Why It Exists -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Why It Exists</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-8">
+                Juvenile courts are overwhelmed with youth who need help, not just punishment. But most programs rely on outdated worksheets, overworked counselors, or in-person check-ins that don’t scale.
+            </p>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                Youth Haven solves that by creating a fully digital rehabilitation experience that is:
+            </p>
+            <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Tamper-proof
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Therapeutic
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Court-trackable
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Legally compliant
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Easy to use on any phone or tablet
+                </li>
+            </ul>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">How It Works</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                Each youth is enrolled by the court—no email needed. They log into the mobile or web app using a secure device, and complete daily or weekly sessions that include:
+            </p>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Video-based therapy check-ins
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Life skills modules (e.g., anger management, money skills, job prep)
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Short personal reflection journals or quizzes
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Recorded participation that is automatically sent to the court
+                </li>
+            </ul>
+        </section>
+
+        <!-- Core Safeguards -->
+        <section id="safeguards" class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">🔐 Core Safeguards (Anti-Cheating + Legal Security)</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-700">
+                            <th class="py-3 px-4 text-left font-semibold rounded-tl-lg">Feature</th>
+                            <th class="py-3 px-4 text-left font-semibold rounded-tr-lg">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Always-On Camera Recording</td>
+                            <td class="py-3 px-4">Every session is recorded from start to finish via the front camera.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Automatic Upload to Court Contacts</td>
+                            <td class="py-3 px-4">After each session, the video is securely sent to the assigned judge, PO, or caseworker.</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Auto-Delete After Upload</td>
+                            <td class="py-3 px-4">Videos are erased from the system to protect privacy and reduce storage.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">No Minor Emails Required</td>
+                            <td class="py-3 px-4">Courts enroll youth directly; no sign-up needed by the juvenile.</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">One-Device Login Only</td>
+                            <td class="py-3 px-4">Each account is tied to a single device unless changed by a court admin.</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Random Face/Voice Prompts</td>
+                            <td class="py-3 px-4">During each session, juveniles must verify their identity with spontaneous prompts.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-gray-800">Watermarked Proof</td>
+                            <td class="py-3 px-4">Every session video includes name/date to prevent tampering or impersonation.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <section id="how-it-works">
-            <h2>How It Works</h2>
-            <p>Each youth is enrolled by the court—no email needed. They log into the mobile or web app using a secure device, and complete daily or weekly sessions that include:</p>
-            <div class="icon-list">
-                <ul>
-                    <li>Video-based therapy check-ins</li>
-                    <li>Life skills modules (e.g., anger management, money skills, job prep)</li>
-                    <li>Short personal reflection journals or quizzes</li>
-                    <li>Recorded participation that is automatically sent to the court</li>
-                </ul>
+        <!-- Court Dashboard for Judges + Officers -->
+        <section id="dashboard" class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Court Dashboard for Judges + Officers</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                Admins (judges, probation officers, counselors) receive:
+            </p>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Secure links to session video evidence
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Compliance alerts (missed check-ins, identity mismatch, unusual behavior)
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Progress summaries (modules completed, reflections submitted, total time engaged)
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Exportable PDF reports for hearings or status reviews
+                </li>
+            </ul>
+        </section>
+
+        <!-- What Youth See -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">What Youth See</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                From their side, the experience feels like a private, positive, mobile classroom:
+            </p>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Easy logins with daily goals
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Modules that take 10–30 minutes max
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Supportive, guided video prompts
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Motivation via badges or completion streaks
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> No punishments—just structured self-work with proof
+                </li>
+            </ul>
+        </section>
+
+        <!-- Example Use Case -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Example Use Case</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-6">
+                A judge sentences a 15-year-old youth to complete 30 days of structured behavioral support.
+            </p>
+            <ul class="list-disc list-inside space-y-2 max-w-3xl mx-auto text-gray-700 mb-6">
+                <li>Instead of placing them in a crowded program with limited space, the judge activates Youth Haven CourtLink.</li>
+            </ul>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-4">Now that youth:</p>
+            <ul class="list-disc list-inside space-y-2 max-w-3xl mx-auto text-gray-700 mb-6">
+                <li>Logs in daily from their approved device</li>
+                <li>Completes guided modules (e.g., handling anger, preparing for work)</li>
+                <li>Talks to the camera with honest reflections</li>
+                <li>Is monitored through automated video review</li>
+            </ul>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-700 mb-4">Meanwhile, the judge:</p>
+            <ul class="list-disc list-inside space-y-2 max-w-3xl mx-auto text-gray-700">
+                <li>Gets daily compliance updates</li>
+                <li>Sees real videos of growth (or disengagement)</li>
+                <li>Makes smarter decisions about next steps</li>
+            </ul>
+        </section>
+
+        <!-- Who It’s For -->
+        <section id="who-its-for" class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Who It’s For</h2>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Juvenile courts seeking modern alternatives to detention
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Probation departments seeking lower-risk compliance tracking
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> State diversion grant programs requiring measurable outcomes
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Schools with court-connected students (optional use case)
+                </li>
+            </ul>
+        </section>
+
+        <!-- Privacy + Compliance Ready -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Privacy + Compliance Ready</h2>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> HIPAA-lite compliant: No private medical records stored
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> FERPA compliant: No student data shared without court admin consent
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> COPPA-safe: No minor email or self-sign-up required
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Data handling: All sensitive video deleted after court delivery
+                </li>
+            </ul>
+        </section>
+
+        <!-- Revenue + Funding Model -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Revenue + Funding Model</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="table-header-formal">
+                            <th class="py-3 px-4 text-left font-semibold rounded-tl-lg">Source</th>
+                            <th class="py-3 px-4 text-left font-semibold rounded-tr-lg">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Court/Agency Licensing</td>
+                            <td class="py-3 px-4">Monthly flat fee or per-enrolled-youth fee paid by court systems</td>
+                        </tr>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">Grants</td>
+                            <td class="py-3 px-4">Eligible for DOJ, juvenile diversion, or mental health program funding</td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4 font-semibold text-gray-800">State Contracts</td>
+                            <td class="py-3 px-4">Expand via RFP or pilot with Department of Juvenile Justice</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-gray-800">Add-on Services</td>
+                            <td class="py-3 px-4">Optional support after court case: school coaching, parent tools</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <section id="safeguards">
-            <h2>🔐 Core Safeguards (Anti-Cheating + Legal Security)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Always-On Camera Recording</strong></td>
-                        <td>Every session is recorded from start to finish via the front camera.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Automatic Upload to Court Contacts</strong></td>
-                        <td>After each session, the video is securely sent to the assigned judge, PO, or caseworker.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Auto-Delete After Upload</strong></td>
-                        <td>Videos are erased from the system to protect privacy and reduce storage.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>No Minor Emails Required</strong></td>
-                        <td>Courts enroll youth directly; no sign-up needed by the juvenile.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>One-Device Login Only</strong></td>
-                        <td>Each account is tied to a single device unless changed by a court admin.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Random Face/Voice Prompts</strong></td>
-                        <td>During each session, juveniles must verify their identity with spontaneous prompts.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Watermarked Proof</strong></td>
-                        <td>Every session video includes name/date to prevent tampering or impersonation.</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Why This Wins -->
+        <section class="bg-white p-8 mb-8 rounded-lg shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-6 section-heading">Why This Wins</h2>
+            <ul class="space-y-4 max-w-2xl mx-auto">
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> First of its kind to combine live session monitoring, automatic court delivery, and anti-cheating safeguards in one tool
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Solves the pain point of verifying juvenile effort and identity
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Scalable to thousands of youth with minimal staff increase
+                </li>
+                <li class="list-item-formal">
+                    <span class="text-blue-700 text-2xl mr-3">✓</span> Courts save money while increasing impact
+                </li>
+            </ul>
         </section>
 
-        <section id="court-dashboard">
-            <h2>Court Dashboard for Judges + Officers</h2>
-            <p>Admins (judges, probation officers, counselors) receive:</p>
-            <div class="icon-list">
-                <ul>
-                    <li>Secure links to session video evidence</li>
-                    <li>Compliance alerts (missed check-ins, identity mismatch, unusual behavior)</li>
-                    <li>Progress summaries (modules completed, reflections submitted, total time engaged)</li>
-                    <li>Exportable PDF reports for hearings or status reviews</li>
-                </ul>
-            </div>
-        </section>
+        <!-- Request Demo/Contact for Government Agencies -->
+        <section id="request-demo" class="bg-blue-50 p-8 rounded-lg shadow-xl text-center border border-blue-200">
+            <h2 class="text-3xl font-bold text-blue-800 mb-6">📍Ready to Partner with Government Agencies</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-3xl mx-auto">
+                We are actively seeking partnerships with juvenile courts, probation departments, and state programs to launch pilot trials and integrate Youth Haven CourtLink™ into your system.
+            </p>
+            <p class="text-lg text-gray-700 mb-8 max-w-3xl mx-auto">
+                For inquiries, detailed demonstrations, or to discuss a pilot program tailored to your district's needs, please reach out to our team.
+            </p>
 
-        <section id="what-youth-see">
-            <h2>What Youth See</h2>
-            <p>From their side, the experience feels like a private, positive, mobile classroom:</p>
-            <div class="icon-list">
-                <ul>
-                    <li>Easy logins with daily goals</li>
-                    <li>Modules that take 10–30 minutes max</li>
-                    <li>Supportive, guided video prompts</li>
-                    <li>Motivation via badges or completion streaks</li>
-                    <li>No punishments—just structured self-work with proof</li>
-                </ul>
-            </div>
+            <a href="mailto:info@youthhavencourtlink.com" class="cta-button inline-block">
+                Request a Demo or Contact Us
+            </a>
+            <p class="text-sm text-gray-500 mt-4">
+                (This will open your email client to send an inquiry.)
+            </p>
         </section>
-
-        <section id="example-use-case">
-            <h2>Example Use Case</h2>
-            <p>A judge sentences a 15-year-old youth to complete 30 days of structured behavioral support.</p>
-            <div class="bullet-points">
-                <ul>
-                    <li>Instead of placing them in a crowded program with limited space, the judge activates Youth Haven CourtLink.</li>
-                </ul>
-            </div>
-            <p>Now that youth:</p>
-            <div class="bullet-points">
-                <ul>
-                    <li>Logs in daily from their approved device</li>
-                    <li>Completes guided modules (e.g., handling anger, preparing for work)</li>
-                    <li>Talks to the camera with honest reflections</li>
-                    <li>Is monitored through automated video review</li>
-                </ul>
-            </div>
-            <p>Meanwhile, the judge:</p>
-            <div class="bullet-points">
-                <ul>
-                    <li>Gets daily compliance updates</li>
-                    <li>Sees real videos of growth (or disengagement)</li>
-                    <li>Makes smarter decisions about next steps</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="who-its-for">
-            <h2>Who It’s For</h2>
-            <div class="icon-list">
-                <ul>
-                    <li>Juvenile courts seeking modern alternatives to detention</li>
-                    <li>Probation departments seeking lower-risk compliance tracking</li>
-                    <li>State diversion grant programs requiring measurable outcomes</li>
-                    <li>Schools with court-connected students (optional use case)</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="privacy-compliance">
-            <h2>Privacy + Compliance Ready</h2>
-            <div class="icon-list">
-                <ul>
-                    <li>HIPAA-lite compliant: No private medical records stored</li>
-                    <li>FERPA compliant: No student data shared without court admin consent</li>
-                    <li>COPPA-safe: No minor email or self-sign-up required</li>
-                    <li>Data handling: All sensitive video deleted after court delivery</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="revenue-funding">
-            <h2>Revenue + Funding Model</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Source</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Court/Agency Licensing</strong></td>
-                        <td>Monthly flat fee or per-enrolled-youth fee paid by court systems</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Grants</strong></td>
-                        <td>Eligible for DOJ, juvenile diversion, or mental health program funding</td>
-                    </tr>
-                    <tr>
-                        <td><strong>State Contracts</strong></td>
-                        <td>Expand via RFP or pilot with Department of Juvenile Justice</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Add-on Services</strong></td>
-                        <td>Optional support after court case: school coaching, parent tools</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section id="why-this-wins">
-            <h2>Why This Wins</h2>
-            <div class="icon-list">
-                <ul>
-                    <li>First of its kind to combine live session monitoring, automatic court delivery, and anti-cheating safeguards in one tool</li>
-                    <li>Solves the pain point of verifying juvenile effort and identity</li>
-                    <li>Scalable to thousands of youth with minimal staff increase</li>
-                    <li>Courts save money while increasing impact</li>
-                </ul>
-            </div>
-        </section>
-
-        <div class="call-to-action" id="contact">
-            <h3>📍Ready to Launch Pilot Programs</h3>
-            <p>We are actively seeking 1–2 counties or juvenile courts to run 30–60 day pilot trials.</p>
-            <div class="bullet-points">
-                <ul>
-                    <li>Free training for staff</li>
-                    <li>Full dashboard setup</li>
-                    <li>Court-issued IDs or device locks</li>
-                    <li>Customized module pacing per district</li>
-                </ul>
-            </div>
-            <a href="/signup" class="btn">Sign Up for Pilot</a> <!-- Changed button text and link -->
-        </div>
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2025 Youth Haven CourtLink™. All rights reserved.</p>
+        <p class="text-center py-6 text-gray-600 text-sm border-t border-gray-200 mt-8">&copy; 2025 Youth Haven CourtLink™. All rights reserved.</p>
     </footer>
 </body>
 </html>
