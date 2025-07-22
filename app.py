@@ -1,5 +1,5 @@
 # In app.py
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, send_from_directory # Import send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file, send_from_directory
 import os
 import datetime
 import uuid
@@ -96,12 +96,10 @@ def homepage():
     if the user is already logged in.
     """
     if 'user_id' in session:
-        if session['user_role'] == 'youth':
-            return redirect(url_for('youth_dashboard'))
-        elif session['user_role'] == 'admin' or session['user_role'] == 'judge':
-            return redirect(url_for('admin_dashboard'))
+        # If logged in, redirect to the combined dashboard (index.html)
+        return redirect(url_for('dashboard'))
     
-    # Serve the static home.html from the 'static' folder
+    # If not logged in, serve the public homepage file
     return send_from_directory('static', 'home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -119,7 +117,7 @@ def login():
             if user_id in mock_youth_db and mock_youth_db[user_id]['device_id'] == device_id:
                 session['user_id'] = user_id
                 session['user_role'] = 'youth'
-                return redirect(url_for('youth_dashboard'))
+                return redirect(url_for('dashboard')) # Redirect to combined dashboard
             else:
                 message = "Invalid Youth ID or Device ID."
                 user_type = 'youth'
@@ -127,7 +125,7 @@ def login():
             if user_id in mock_admin_db and mock_admin_db[user_id]['password'] == password:
                 session['user_id'] = user_id
                 session['user_role'] = mock_admin_db[user_id]['role'].lower().replace(' ', '_')
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('dashboard')) # Redirect to combined dashboard
             else:
                 message = "Invalid Admin/Judge ID or Password."
                 user_type = 'admin'
@@ -184,38 +182,55 @@ def signup():
             
     return render_template('signup.html', message=message)
 
-
-# --- Youth-Specific Routes ---
-@app.route('/youth_dashboard')
-def youth_dashboard():
-    """Displays the youth's personalized dashboard with daily goals."""
-    if 'user_id' not in session or session['user_role'] != 'youth':
+# --- Combined Dashboard Route ---
+@app.route('/dashboard') # You can also name this '/' if you want it to be the default post-login page
+def dashboard():
+    """
+    Renders the combined dashboard (index.html) based on user role.
+    This replaces separate youth_dashboard and admin_dashboard routes for rendering.
+    """
+    if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    youth_id = session['user_id']
-    youth_data = mock_youth_db.get(youth_id)
-    if not youth_data:
-        return "Youth data not found.", 404
+    user_role = session['user_role']
+    user_id = session['user_id']
 
-    next_module_info = {
-        "name": youth_data['current_module'],
-        "description": f"Complete your daily session for {youth_data['current_module']}."
-    }
-    
-    recent_sessions = mock_session_logs.get(youth_id, [])[-3:]
+    if user_role == 'youth':
+        youth_data = mock_youth_db.get(user_id)
+        if not youth_data:
+            return "Youth data not found.", 404
+        next_module_info = {
+            "name": youth_data['current_module'],
+            "description": f"Complete your daily session for {youth_data['current_module']}."
+        }
+        recent_sessions = mock_session_logs.get(user_id, [])[-3:]
+        return render_template('index.html',
+                               youth=youth_data,
+                               next_module=next_module_info,
+                               recent_sessions=recent_sessions,
+                               now=datetime.datetime.now) # Pass now for date calculations
+    elif user_role in ['admin', 'judge']:
+        admin_data = mock_admin_db.get(user_id)
+        if not admin_data:
+            return "Admin/Judge data not found.", 404
+        accessible_youth_ids = admin_data.get('assigned_youth', [])
+        youth_list = [
+            {'id': uid, **mock_youth_db[uid], 'recent_sessions': mock_session_logs.get(uid, [])[-1:]}
+            for uid in accessible_youth_ids if uid in mock_youth_db
+        ]
+        return render_template('index.html',
+                               admin=admin_data,
+                               youth_list=youth_list,
+                               now=datetime.datetime.now) # Pass now for date calculations
+    else:
+        return "Unauthorized role.", 403
 
-    return render_template('youth_dashboard.html',
-                           youth=youth_data,
-                           next_module=next_module_info,
-                           recent_sessions=recent_sessions,
-                           now=datetime.datetime.now)
 
-
+# --- Youth-Specific Routes (for actions, not direct rendering of dashboard) ---
 @app.route('/youth_session/<module_name>')
 def youth_session(module_name):
     """
     Renders the page for a specific rehabilitation module session.
-    This would embed video prompts, reflection questions, etc.
     """
     if 'user_id' not in session or session['user_role'] != 'youth':
         return redirect(url_for('login'))
@@ -273,28 +288,7 @@ def submit_session_data():
 
     return jsonify({"success": True, "message": "Session submitted successfully!", "session_id": session_uuid})
 
-# --- Admin/Judge Specific Routes ---
-
-@app.route('/admin_dashboard')
-def admin_dashboard():
-    """Displays the admin/judge dashboard with an overview of youth progress."""
-    if 'user_id' not in session or (session['user_role'] != 'admin' and session['user_role'] != 'judge'):
-        return redirect(url_for('login'))
-
-    admin_id = session['user_id']
-    admin_data = mock_admin_db.get(admin_id)
-
-    accessible_youth_ids = admin_data.get('assigned_youth', [])
-    youth_list = [
-        {'id': uid, **mock_youth_db[uid], 'recent_sessions': mock_session_logs.get(uid, [])[-1:]}
-        for uid in accessible_youth_ids if uid in mock_youth_db
-    ]
-
-    return render_template('admin_dashboard.html',
-                           admin=admin_data,
-                           youth_list=youth_list,
-                           now=datetime.datetime.now)
-
+# --- Admin/Judge Specific Routes (for actions, not direct rendering of dashboard) ---
 @app.route('/admin/youth_details/<youth_id>')
 def youth_details(youth_id):
     """
